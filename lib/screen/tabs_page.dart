@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:x_m/screen/tabs/category.dart';
 import 'package:x_m/screen/tabs/recommend.dart';
 
 class TabsPage extends StatefulWidget {
@@ -44,8 +45,8 @@ class _TabsPage extends State<TabsPage> {
       body: IndexedStack(
         index: currentTab,
         children: [
-          Recommend(),
-          Container(),
+          const Recommend(),
+          Cateogry(),
           Container(),
         ],
       ),
