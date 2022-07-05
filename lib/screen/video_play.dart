@@ -106,6 +106,9 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
                   child: FlickVideoPlayer(
                     flickManager: flickManager,
                     wakelockEnabledFullscreen: true,
+                    preferredDeviceOrientationFullscreen: const [
+                      DeviceOrientation.landscapeRight,
+                    ],
                   ),
                 ),
                 Positioned(

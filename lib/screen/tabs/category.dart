@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:x_m/components/initLoading.dart';
 import 'package:x_m/components/loadingMore.dart';
 import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
@@ -90,6 +91,10 @@ class _CategoryPage extends State<CategoryPage>
   bool hasMore = false;
   final ScrollController _scrollController = ScrollController();
   bool isLoadMoreing = false;
+  bool isInit = false;
+  bool isErr = false;
+
+  String activeSub = '全部';
 
   @override
   void initState() {
@@ -108,15 +113,22 @@ class _CategoryPage extends State<CategoryPage>
   }
 
   Future _getList() async {
+    setState(() {
+      isErr = false;
+    });
     Map<String, dynamic> params = {
       'pageNum': page,
       'pageSize': 18,
       'type': widget.type
     };
+    if (activeSub != '全部') {
+      params['category'] = activeSub;
+    }
     return Util.dio.get('/movie/list', queryParameters: params).then((res) {
       if (res.data['err'] == true) {
         setState(() {
           isLoadMoreing = false;
+          isErr = page == 1;
         });
         return;
       }
@@ -136,6 +148,7 @@ class _CategoryPage extends State<CategoryPage>
         }
         hasMore = (total / 18).ceil() > page;
         isLoadMoreing = false;
+        isInit = true;
       });
     });
   }
@@ -148,42 +161,62 @@ class _CategoryPage extends State<CategoryPage>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: RefreshIndicator(
-        onRefresh: _refresh,
-        color: xPrimaryColor,
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => CategoryItem(
-                  movie: movies[index],
-                  ontap: () {
-                    Navigator.of(context)
-                        .push(
-                      MaterialPageRoute(
-                        builder: (context) => VideoPaly(movie: movies[index]),
-                      ),
-                    )
-                        .then((value) {
-                      Timer(const Duration(milliseconds: 300), () {
-                        Util.setStatusBarTextColor(tabStatusBarStyle);
+    super.build(context);
+    return InitLoading(
+      loading: !isInit,
+      isErr: isErr,
+      refresh: () {
+        page = 1;
+        _getList();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          color: xPrimaryColor,
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              CategorySub(
+                widget: widget,
+                activeSub: activeSub,
+                change: (cateSub) {
+                  page = 1;
+                  setState(() {
+                    activeSub = cateSub;
+                  });
+                  _getList();
+                },
+              ),
+              SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => CategoryItem(
+                    movie: movies[index],
+                    ontap: () {
+                      Navigator.of(context)
+                          .push(
+                        MaterialPageRoute(
+                          builder: (context) => VideoPaly(movie: movies[index]),
+                        ),
+                      )
+                          .then((value) {
+                        Timer(const Duration(milliseconds: 300), () {
+                          Util.setStatusBarTextColor(tabStatusBarStyle);
+                        });
                       });
-                    });
-                  },
+                    },
+                  ),
+                  childCount: movies.length,
                 ),
-                childCount: movies.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 85 / 175,
+                  crossAxisSpacing: 10,
+                ),
               ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 85 / 175,
-                crossAxisSpacing: 10,
-              ),
-            ),
-            LoadingMore(hasMore: hasMore)
-          ],
+              LoadingMore(hasMore: hasMore)
+            ],
+          ),
         ),
       ),
     );
@@ -191,6 +224,50 @@ class _CategoryPage extends State<CategoryPage>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class CategorySub extends StatelessWidget {
+  const CategorySub({
+    Key? key,
+    required this.widget,
+    this.activeSub = '全部',
+    required this.change,
+  }) : super(key: key);
+
+  final CategoryPage widget;
+  final String? activeSub;
+  final void Function(String cateSub)? change;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Wrap(
+          runSpacing: 6,
+          children: categorySub[widget.type]!
+              .map(
+                (cate) => GestureDetector(
+                  onTap: () {
+                    change!(cate);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20, left: 10),
+                    child: Text(
+                      cate,
+                      style: TextStyle(
+                        color:
+                            activeSub == cate ? xPrimaryColor : Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
 }
 
 class CategoryItem extends StatelessWidget {

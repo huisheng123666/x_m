@@ -4,6 +4,8 @@ import 'package:x_m/screen/tabs/category.dart';
 import 'package:x_m/screen/tabs/recommend.dart';
 
 class TabsPage extends StatefulWidget {
+  const TabsPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _TabsPage();
@@ -15,6 +17,7 @@ class _TabsPage extends State<TabsPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     ToastContext().init(context);
 
     return Scaffold(
@@ -49,7 +52,7 @@ class _TabsPage extends State<TabsPage> with AutomaticKeepAliveClientMixin {
         index: currentTab,
         children: [
           const Recommend(),
-          Cateogry(),
+          const Cateogry(),
           Container(),
         ],
       ),

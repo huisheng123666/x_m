@@ -41,7 +41,7 @@ class Util {
     };
 
     Util.dio.options = BaseOptions(
-      baseUrl: 'http://192.168.28.29:4000/api',
+      baseUrl: 'http://192.168.100.2:4000/api',
       connectTimeout: 5000,
       receiveTimeout: 3000,
       contentType: 'application/json', // Added contentType here

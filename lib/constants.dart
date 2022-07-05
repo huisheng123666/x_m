@@ -8,3 +8,24 @@ const tabStatusBarStyle = SystemUiOverlayStyle(
   statusBarColor: Colors.white,
   statusBarIconBrightness: Brightness.dark,
 );
+
+const Map<String, List<String>> categorySub = {
+  '1': [
+    '全部',
+    '动作片',
+    '喜剧片',
+    '爱情片',
+    '科幻片',
+    '恐怖片',
+    '剧情片',
+    '战争片',
+    '纪录片',
+    '悬疑片',
+    '犯罪片',
+    '动画片',
+    '奇幻片'
+  ],
+  '14': ['全部', '国产剧', '香港剧', '台湾剧', '美国剧', '韩国剧', '日本剧'],
+  '21': ['全部', '大陆综艺', '日韩综艺', '港台综艺', '欧美综艺'],
+  '26': ['全部', '国产动漫', '日韩动漫', '欧美动漫']
+};
