@@ -1,16 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:toast/toast.dart';
+import 'package:x_m/components/initLoading.dart';
 import 'package:x_m/components/recommend/recommend_item.dart';
+import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
 import 'package:x_m/screen/video_play.dart';
 import 'package:x_m/util.dart';
-
-const statusBarStyle = SystemUiOverlayStyle(
-  statusBarColor: Colors.white,
-  statusBarIconBrightness: Brightness.dark,
-);
 
 class Recommend extends StatefulWidget {
   const Recommend({super.key});
@@ -23,8 +18,8 @@ class Recommend extends StatefulWidget {
 
 class _Recommend extends State<Recommend> {
   List<Movie> movies = [];
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  bool isInit = false;
+  bool initErr = false;
 
   @override
   void initState() {
@@ -37,8 +32,14 @@ class _Recommend extends State<Recommend> {
   }
 
   Future _getList() async {
+    setState(() {
+      initErr = false;
+    });
     return Util.dio.get('/movie/recommend').then((res) {
       if (res.data['err'] == true) {
+        setState(() {
+          initErr = true;
+        });
         return;
       }
       List<Movie> moviesTem = [];
@@ -47,15 +48,15 @@ class _Recommend extends State<Recommend> {
       }
       setState(() {
         movies = moviesTem;
+        isInit = true;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    ToastContext().init(context);
+    Util.setStatusBarTextColor(tabStatusBarStyle);
 
-    Util.setStatusBarTextColor(statusBarStyle);
     return Scaffold(
       backgroundColor: const Color(0xfff6f6f6),
       appBar: AppBar(
@@ -79,26 +80,32 @@ class _Recommend extends State<Recommend> {
           )
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: _onRefrsh,
-        child: ListView.builder(
-          itemBuilder: (context, index) => RecommendItem(
-            movie: movies[index],
-            onTab: () {
-              Navigator.of(context)
-                  .push(
-                MaterialPageRoute(
-                  builder: (context) => VideoPaly(movie: movies[index]),
-                ),
-              )
-                  .then((value) {
-                Timer(const Duration(milliseconds: 300), () {
-                  Util.setStatusBarTextColor(statusBarStyle);
+      body: InitLoading(
+        loading: !isInit,
+        isErr: initErr,
+        refresh: _getList,
+        child: RefreshIndicator(
+          onRefresh: _onRefrsh,
+          color: xPrimaryColor,
+          child: ListView.builder(
+            itemBuilder: (context, index) => RecommendItem(
+              movie: movies[index],
+              onTab: () {
+                Navigator.of(context)
+                    .push(
+                  MaterialPageRoute(
+                    builder: (context) => VideoPaly(movie: movies[index]),
+                  ),
+                )
+                    .then((value) {
+                  Timer(const Duration(milliseconds: 300), () {
+                    Util.setStatusBarTextColor(tabStatusBarStyle);
+                  });
                 });
-              });
-            },
+              },
+            ),
+            itemCount: movies.length,
           ),
-          itemCount: movies.length,
         ),
       ),
     );

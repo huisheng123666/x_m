@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +33,12 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    Timer(const Duration(milliseconds: 300), () {
+      Util.setStatusBarTextColor(const SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.light,
+      ));
+    });
 
     flickManager = FlickManager(
       // autoPlay: false,
@@ -78,11 +86,6 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Util.setStatusBarTextColor(const SystemUiOverlayStyle(
-      statusBarColor: Colors.black,
-      statusBarIconBrightness: Brightness.light,
-    ));
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
