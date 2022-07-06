@@ -33,12 +33,12 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(milliseconds: 300), () {
-      Util.setStatusBarTextColor(const SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
-        statusBarIconBrightness: Brightness.light,
-      ));
-    });
+    Util.setStatusBarTextColor(
+        const SystemUiOverlayStyle(
+          statusBarColor: Colors.black,
+          statusBarIconBrightness: Brightness.light,
+        ),
+        0);
 
     flickManager = FlickManager(
       // autoPlay: false,

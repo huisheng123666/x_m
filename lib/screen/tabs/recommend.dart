@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:x_m/components/initLoading.dart';
 import 'package:x_m/components/recommend/recommend_item.dart';
 import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
+import 'package:x_m/screen/search.dart';
 import 'package:x_m/screen/video_play.dart';
 import 'package:x_m/util.dart';
 
@@ -55,8 +57,6 @@ class _Recommend extends State<Recommend> {
 
   @override
   Widget build(BuildContext context) {
-    Util.setStatusBarTextColor(tabStatusBarStyle);
-
     return Scaffold(
       backgroundColor: const Color(0xfff6f6f6),
       appBar: AppBar(
@@ -68,7 +68,17 @@ class _Recommend extends State<Recommend> {
         elevation: 0.2,
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context)
+                  .push(
+                CupertinoPageRoute(
+                  builder: (context) => Search(),
+                ),
+              )
+                  .then((value) {
+                Util.setStatusBarTextColor(tabStatusBarStyle);
+              });
+            },
             child: const Padding(
               padding: EdgeInsets.all(10),
               child: Icon(
@@ -93,14 +103,12 @@ class _Recommend extends State<Recommend> {
               onTab: () {
                 Navigator.of(context)
                     .push(
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                     builder: (context) => VideoPaly(movie: movies[index]),
                   ),
                 )
                     .then((value) {
-                  Timer(const Duration(milliseconds: 300), () {
-                    Util.setStatusBarTextColor(tabStatusBarStyle);
-                  });
+                  Util.setStatusBarTextColor(tabStatusBarStyle);
                 });
               },
             ),

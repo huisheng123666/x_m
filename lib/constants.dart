@@ -9,6 +9,11 @@ const tabStatusBarStyle = SystemUiOverlayStyle(
   statusBarIconBrightness: Brightness.dark,
 );
 
+const myStatusBarColor = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  statusBarIconBrightness: Brightness.light,
+);
+
 const Map<String, List<String>> categorySub = {
   '1': [
     '全部',

@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
@@ -34,11 +32,11 @@ class VideoIntro extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               '分类：${movie.category} · 语言：${movie.language} · 导演：${movie.director}',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xffa5a5a5), height: 1.6),
+              style: const TextStyle(color: Color(0xffa5a5a5), height: 1.6),
             ),
           ),
           const SizedBox(height: 20),
@@ -74,7 +72,7 @@ class VideoIntro extends StatelessWidget {
             ],
           ),
           Container(
-            margin: EdgeInsets.only(top: 20, bottom: 15),
+            margin: const EdgeInsets.only(top: 20, bottom: 15),
             height: 10,
             color: const Color(0xfff6f6f6),
           ),
@@ -88,10 +86,10 @@ class VideoIntro extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               movie.intro,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black87,
                 height: 1.8,
                 fontSize: 14,
@@ -109,19 +107,17 @@ class VideoIntro extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               movie.actor,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black87,
                 height: 1.6,
                 fontSize: 14,
               ),
             ),
           ),
-          SizedBox(
-            height: Util.bottomSafeHeight(context),
-          ),
+          SizedBox(height: Util.bottomSafeHeight(context) + 10),
         ],
       ),
     );

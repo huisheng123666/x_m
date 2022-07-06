@@ -41,21 +41,24 @@ class CommentWrap extends StatelessWidget {
             child: Container(
               height: 40,
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              margin: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                  color: Color.fromRGBO(0, 0, 0, 0.05),
+                  color: const Color.fromRGBO(0, 0, 0, 0.05),
                   borderRadius: BorderRadius.circular(5)),
               child: const TextField(
                 keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.send,
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    hintText: '请输入评论',
-                    hintStyle: TextStyle(color: Color(0xff999999))),
+                  isDense: true,
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  hintText: '请输入评论',
+                  hintStyle: TextStyle(
+                    color: Color(0xff999999),
+                  ),
+                ),
               ),
             ),
           ),
