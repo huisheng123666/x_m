@@ -52,7 +52,7 @@ class Util {
     };
 
     Util.dio.options = BaseOptions(
-      baseUrl: 'http://192.168.28.13:4000/api',
+      baseUrl: 'https://admin.xmw.monster/api',
       connectTimeout: 5000,
       receiveTimeout: 3000,
       contentType: 'application/json', // Added contentType here

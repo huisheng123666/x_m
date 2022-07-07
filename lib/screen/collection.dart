@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 import 'package:x_m/components/category/category_item.dart';
 import 'package:x_m/components/initLoading.dart';
 import 'package:x_m/components/loadingMore.dart';
@@ -27,11 +28,12 @@ class _Collection extends State<Collection> {
   bool isInit = false;
   bool isErr = false;
 
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _scrollController.dispose();
+
+  //   super.dispose();
+  // }
 
   _getList() {
     setState(() {
@@ -91,6 +93,7 @@ class _Collection extends State<Collection> {
 
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -111,47 +114,52 @@ class _Collection extends State<Collection> {
           ),
         ),
       ),
-      body: InitLoading(
-        loading: !isInit,
-        isErr: isErr,
-        refresh: () {
-          page = 1;
-          _getList();
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 10),
-              ),
-              SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => CategoryItem(
-                    movie: movies[index],
-                    ontap: () {
-                      Navigator.of(context)
-                          .push(
-                        CupertinoPageRoute(
-                          builder: (context) => VideoPaly(movie: movies[index]),
-                        ),
-                      )
-                          .then((value) {
-                        Util.setStatusBarTextColor(tabStatusBarStyle);
-                      });
-                    },
+      body: SizedBox(
+        width: Util.screenWidth(context),
+        height: double.infinity,
+        child: InitLoading(
+          loading: !isInit,
+          isErr: isErr,
+          refresh: () {
+            page = 1;
+            _getList();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 10),
+                ),
+                SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => CategoryItem(
+                      movie: movies[index],
+                      ontap: () {
+                        Navigator.of(context)
+                            .push(
+                          CupertinoPageRoute(
+                            builder: (context) =>
+                                VideoPaly(movie: movies[index]),
+                          ),
+                        )
+                            .then((value) {
+                          Util.setStatusBarTextColor(tabStatusBarStyle);
+                        });
+                      },
+                    ),
+                    childCount: movies.length,
                   ),
-                  childCount: movies.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 85 / 175,
+                    crossAxisSpacing: 10,
+                  ),
                 ),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 85 / 175,
-                  crossAxisSpacing: 10,
-                ),
-              ),
-              LoadingMore(hasMore: hasMore)
-            ],
+                LoadingMore(hasMore: hasMore)
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -105,6 +103,10 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
                   height: Util.screenWidth(context) * 9 / 16,
                   color: Colors.black87,
                   child: FlickVideoPlayer(
+                    flickVideoWithControls: const FlickVideoWithControls(
+                      controls: FlickPortraitControls(),
+                      videoFit: BoxFit.fitHeight,
+                    ),
                     flickManager: flickManager,
                     wakelockEnabledFullscreen: true,
                     preferredDeviceOrientationFullscreen: const [

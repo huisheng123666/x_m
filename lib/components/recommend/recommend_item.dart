@@ -66,10 +66,14 @@ class RecommendItem extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            '#${movie.category}  #${movie.language}  #${movie.area}',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.black38),
+                          SizedBox(
+                            width: Util.calc(270, context),
+                            child: Text(
+                              '#${movie.category}  #${movie.language}  #${movie.area}',
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black38),
+                            ),
                           )
                         ],
                       ),

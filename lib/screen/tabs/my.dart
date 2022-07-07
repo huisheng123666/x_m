@@ -110,7 +110,7 @@ class _My extends State<My> {
                 Navigator.of(context)
                     .push(
                   CupertinoPageRoute(
-                    builder: (context) => Collection(),
+                    builder: (context) => const Collection(),
                   ),
                 )
                     .then((value) {
