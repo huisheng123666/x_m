@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:toast/toast.dart';
 import 'package:video_player/video_player.dart';
 import 'package:x_m/components/video_play/comment_wrap.dart';
 import 'package:x_m/components/video_play/video_intro.dart';
@@ -247,6 +248,8 @@ class Episode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
+
     return Container(
       height: Util.screenWidth(context) * 9 / 16 - 4,
       width: 60,

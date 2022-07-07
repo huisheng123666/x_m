@@ -3,13 +3,56 @@ import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
 import 'package:x_m/util.dart';
 
-class VideoIntro extends StatelessWidget {
+class VideoIntro extends StatefulWidget {
   final Movie movie;
 
-  const VideoIntro({
-    Key? key,
-    required this.movie,
-  }) : super(key: key);
+  const VideoIntro({super.key, required this.movie});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _VideoIntro(movie);
+  }
+}
+
+class _VideoIntro extends State<VideoIntro> {
+  final Movie movie;
+  bool isCollection = false;
+
+  _VideoIntro(this.movie);
+
+  _collection() {
+    Util.dio.get('/movie/collection', queryParameters: {
+      'id': movie.oid,
+      'like': isCollection ? '0' : '1'
+    }).then((res) {
+      if (res.data['err'] == true) {
+        return;
+      }
+      setState(() {
+        isCollection = !isCollection;
+      });
+    });
+  }
+
+  _getCollectionState() {
+    Util.dio.get('/movie/isCollection', queryParameters: {
+      'id': movie.oid,
+      'noMsg': true,
+    }).then((res) {
+      if (res.data['err'] == true) {
+        return;
+      }
+      setState(() {
+        isCollection = res.data['data']['like'];
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCollectionState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +96,10 @@ class VideoIntro extends StatelessWidget {
               ),
               const SizedBox(width: 50),
               GestureDetector(
-                onTap: () {},
-                child: const Icon(
+                onTap: _collection,
+                child: Icon(
                   Icons.favorite,
-                  color: xPrimaryColor,
+                  color: isCollection ? xPrimaryColor : const Color(0xffcfcfcf),
                   size: 35,
                 ),
               ),

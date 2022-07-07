@@ -1,4 +1,5 @@
 class Movie {
+  final String oid;
   final String id;
   final String title;
   final String cover;
@@ -14,6 +15,7 @@ class Movie {
   final List<String> playUrls;
 
   Movie(
+    this.oid,
     this.id,
     this.title,
     this.cover,
@@ -36,6 +38,7 @@ class Movie {
       urls.add(data['playUrls'][1][i]);
     }
     return Movie(
+      data['_id'],
       data['id'],
       data['title'],
       data['cover'],

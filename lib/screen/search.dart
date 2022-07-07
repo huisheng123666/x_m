@@ -85,8 +85,15 @@ class _Search extends State<Search> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: 0,
         backgroundColor: Colors.white,
@@ -114,7 +121,7 @@ class _Search extends State<Search> {
                     child: TextField(
                       autofocus: true,
                       keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.send,
+                      textInputAction: TextInputAction.search,
                       cursorColor: Colors.black,
                       style: const TextStyle(fontSize: 18),
                       onSubmitted: (String value) {
@@ -154,6 +161,11 @@ class _Search extends State<Search> {
             Expanded(
               child: InitLoading(
                 loading: !isInit,
+                isErr: isErr,
+                refresh: () {
+                  page = 1;
+                  _searchList(searchKey);
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: CustomScrollView(

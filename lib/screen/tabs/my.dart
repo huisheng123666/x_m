@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:x_m/components/button.dart';
 import 'package:x_m/constants.dart';
+import 'package:x_m/models/user.dart';
+import 'package:x_m/screen/collection.dart';
 import 'package:x_m/screen/login.dart';
 import 'package:x_m/util.dart';
+
+GlobalKey<_My> sonKey = GlobalKey();
 
 class My extends StatefulWidget {
   const My({super.key});
@@ -16,6 +20,29 @@ class My extends StatefulWidget {
 
 class _My extends State<My> {
   bool isLogin = false;
+
+  late User user;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  getUserInfo() {
+    Util.localStorage.ready.then((value) {
+      Util.dio
+          .get('/users/userinfo', queryParameters: {'noMsg': true}).then((res) {
+        if (res.data['err'] == true) {
+          return;
+        }
+        setState(() {
+          isLogin = true;
+          user = User.formatJson(res.data['data']);
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +66,10 @@ class _My extends State<My> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.network(
-                          'https://img2.baidu.com/it/u=1994380678,3283034272&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
                         const SizedBox(height: 10),
-                        const Text(
-                          '回声',
-                          style: TextStyle(
+                        Text(
+                          user.userName,
+                          style: const TextStyle(
                             fontSize: 30,
                             decoration: TextDecoration.none,
                             fontWeight: FontWeight.w500,
@@ -57,28 +78,46 @@ class _My extends State<My> {
                         )
                       ],
                     )
-                  : CupertinoButton.filled(
-                      child: Text('登陆'),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .push(
-                          CupertinoPageRoute(
-                            builder: (context) => Login(),
-                          ),
-                        )
-                            .then((value) {
-                          Util.setStatusBarTextColor(myStatusBarColor);
-                        });
-                      }),
+                  : SizedBox(
+                      height: 45,
+                      width: 150,
+                      child: Button(
+                        '登录',
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(
+                            CupertinoPageRoute(
+                              builder: (context) => Login(),
+                            ),
+                          )
+                              .then((value) {
+                            Util.setStatusBarTextColor(myStatusBarColor);
+                            getUserInfo();
+                          });
+                        },
+                      ),
+                    ),
             ),
             Container(
               width: Util.screenWidth(context),
               height: 12,
               color: const Color(0xfff6f6f6),
             ),
-            const LinkItem(
+            LinkItem(
               name: '收藏',
               icon: Icons.video_collection_outlined,
+              onTap: () {
+                Navigator.of(context)
+                    .push(
+                  CupertinoPageRoute(
+                    builder: (context) => Collection(),
+                  ),
+                )
+                    .then((value) {
+                  Util.setStatusBarTextColor(myStatusBarColor);
+                  getUserInfo();
+                });
+              },
             ),
             const LinkItem(
               name: '求片',

@@ -22,6 +22,11 @@ class _TabsPage extends State<TabsPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     Util.setStatusBarTextColor(tabStatusBarStyle);
+    // Util.localStorage.ready.then((value) {
+    //   if (value) {
+    //     Util.localStorage.clear();
+    //   }
+    // });
   }
 
   @override
@@ -37,10 +42,12 @@ class _TabsPage extends State<TabsPage> with AutomaticKeepAliveClientMixin {
           Expanded(
             child: IndexedStack(
               index: currentTab,
-              children: const [
-                Recommend(),
-                Cateogry(),
-                My(),
+              children: [
+                const Recommend(),
+                const Cateogry(),
+                My(
+                  key: sonKey,
+                ),
               ],
             ),
           ),
@@ -52,6 +59,9 @@ class _TabsPage extends State<TabsPage> with AutomaticKeepAliveClientMixin {
                 currentTab = value;
                 Util.setStatusBarTextColor(
                     value == 2 ? myStatusBarColor : tabStatusBarStyle, 0);
+                if (value == 2) {
+                  sonKey.currentState?.getUserInfo();
+                }
               });
             }),
             iconSize: 20,
@@ -68,7 +78,7 @@ class _TabsPage extends State<TabsPage> with AutomaticKeepAliveClientMixin {
                 label: '分类',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.account_balance),
+                icon: Icon(Icons.account_circle_outlined),
                 label: '我的',
               ),
             ],
