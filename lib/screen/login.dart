@@ -17,6 +17,8 @@ class Login extends StatefulWidget {
 class _Login extends State<Login> {
   String account = '';
   String password = '';
+  bool loginLoading = false;
+  bool regLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +81,7 @@ class _Login extends State<Login> {
             Button(
               '注册',
               backgroundColor: const Color(0xff252528),
+              loading: regLoading,
               onTap: () {
                 _reister(context);
               },
@@ -86,6 +89,7 @@ class _Login extends State<Login> {
             const SizedBox(height: 10),
             Button(
               '登录',
+              loading: loginLoading,
               onTap: () {
                 _login(context);
               },
@@ -101,6 +105,9 @@ class _Login extends State<Login> {
       Toast.show('账号或者密码不能为空', gravity: Toast.center);
       return;
     }
+    setState(() {
+      regLoading = true;
+    });
     Map<String, dynamic> params = {
       'userName': account,
       'userPwd': password,
@@ -110,6 +117,9 @@ class _Login extends State<Login> {
     };
     Util.dio.post('/users/operate', data: params).then((res) {
       if (res.data['err'] == true) {
+        setState(() {
+          regLoading = false;
+        });
         return;
       }
       _login(context);
@@ -121,11 +131,18 @@ class _Login extends State<Login> {
       Toast.show('账号或者密码不能为空', gravity: Toast.center);
       return;
     }
+    setState(() {
+      loginLoading = true;
+    });
     Map<String, dynamic> params = {
       'userName': account,
       'userPwd': password,
     };
     Util.dio.post('/users/login', data: params).then((res) {
+      setState(() {
+        loginLoading = false;
+        regLoading = false;
+      });
       if (res.data['err'] == true) {
         return;
       }

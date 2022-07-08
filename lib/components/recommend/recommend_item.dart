@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
+import 'package:x_m/screen/webview.dart';
 import 'package:x_m/util.dart';
 
 class RecommendItem extends StatelessWidget {
@@ -77,24 +80,40 @@ class RecommendItem extends StatelessWidget {
                           )
                         ],
                       ),
-                      Container(
-                        width: 60,
-                        height: 48,
-                        alignment: Alignment.topCenter,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/icon/tag.png'),
-                            fit: BoxFit.fill,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(
+                            CupertinoPageRoute(
+                              builder: (context) => Webview(
+                                  title: movie.title,
+                                  url:
+                                      'https://m.douban.com/search/?query=${Uri.encodeComponent(movie.title)}'),
+                            ),
+                          )
+                              .then((value) {
+                            Util.setStatusBarTextColor(tabStatusBarStyle);
+                          });
+                        },
+                        child: Container(
+                          width: 60,
+                          height: 48,
+                          alignment: Alignment.topCenter,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/icon/tag.png'),
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 6),
-                          child: Text(
-                            '9.8',
-                            style: TextStyle(
-                              color: Color(0xff010101),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 4),
+                            child: Text(
+                              '豆',
+                              style: TextStyle(
+                                color: Color(0xff41ac52),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

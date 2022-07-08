@@ -42,7 +42,8 @@ dependencies:
   toast: ^0.3.0
   video_player: 2.4.0
   localstorage: ^4.0.0+1
-
+  webview_flutter: ^3.0.4
+  share_plus: ^4.0.10
 
 dev_dependencies:
   flutter_test:

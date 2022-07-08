@@ -32,15 +32,10 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    Util.setStatusBarTextColor(
-        const SystemUiOverlayStyle(
-          statusBarColor: Colors.black,
-          statusBarIconBrightness: Brightness.light,
-        ),
-        0);
+    Util.setStatusBarTextColor(videoPlayStatusBarColor, 0);
 
     flickManager = FlickManager(
-      // autoPlay: false,
+      autoPlay: false,
       videoPlayerController: VideoPlayerController.network(
         widget.movie.playUrls[0],
         formatHint: VideoFormat.hls,
@@ -83,6 +78,10 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
     });
   }
 
+  _clickComment() {
+    tabController.animateTo(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +103,9 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
                   color: Colors.black87,
                   child: FlickVideoPlayer(
                     flickVideoWithControls: const FlickVideoWithControls(
-                      controls: FlickPortraitControls(),
+                      controls: FlickPortraitControls(
+                        iconSize: 25,
+                      ),
                       videoFit: BoxFit.fitHeight,
                     ),
                     flickManager: flickManager,
@@ -225,7 +226,13 @@ class _VideoPlay extends State<VideoPaly> with TickerProviderStateMixin {
             Expanded(
                 child: TabBarView(
               controller: tabController,
-              children: [VideoIntro(movie: widget.movie), CommentWrap()],
+              children: [
+                VideoIntro(
+                  movie: widget.movie,
+                  clickComment: _clickComment,
+                ),
+                CommentWrap(movie: widget.movie)
+              ],
             ))
           ],
         ),
@@ -297,44 +304,3 @@ class Episode extends StatelessWidget {
     );
   }
 }
-
-// class VideoPaly extends StatefulWidget {
-//   const VideoPaly({super.key});
-
-//   @override
-//   _VideoPaly createState() => _VideoPaly();
-// }
-
-// class _VideoPaly extends State<VideoPaly> with SingleTickerProviderStateMixin {
-//   late Animation<double> animation;
-//   late AnimationController controller;
-
-//   initState() {
-//     super.initState();
-//     controller = new AnimationController(
-//         duration: const Duration(milliseconds: 2000), vsync: this);
-//     animation = new Tween(begin: 0.0, end: 300.0).animate(controller)
-//       ..addListener(() {
-//         setState(() {
-//           // the state that has changed here is the animation object’s value
-//         });
-//       });
-//     controller.forward();
-//   }
-
-//   Widget build(BuildContext context) {
-//     return new Center(
-//       child: new Container(
-//         margin: new EdgeInsets.symmetric(vertical: 10.0),
-//         height: animation.value,
-//         width: animation.value,
-//         child: new FlutterLogo(),
-//       ),
-//     );
-//   }
-
-//   dispose() {
-//     controller.dispose();
-//     super.dispose();
-//   }
-// }

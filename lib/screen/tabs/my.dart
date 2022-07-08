@@ -46,84 +46,102 @@ class _My extends State<My> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      color: Colors.white,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              width: Util.screenWidth(context),
-              height: 250,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/user/user_bg.jpeg'),
-                  fit: BoxFit.cover,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Container(
+        height: double.infinity,
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                width: Util.screenWidth(context),
+                height: 250,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/user/user_bg.jpeg'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              child: isLogin
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 10),
-                        Text(
-                          user.userName,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            decoration: TextDecoration.none,
-                            fontWeight: FontWeight.w500,
-                            color: xPrimaryColor,
-                          ),
-                        )
-                      ],
-                    )
-                  : SizedBox(
-                      height: 45,
-                      width: 150,
-                      child: Button(
-                        '登录',
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(
-                            CupertinoPageRoute(
-                              builder: (context) => Login(),
+                child: isLogin
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 10),
+                          Text(
+                            user.userName,
+                            style: const TextStyle(
+                              fontSize: 30,
+                              decoration: TextDecoration.none,
+                              fontWeight: FontWeight.w500,
+                              color: xPrimaryColor,
                             ),
                           )
-                              .then((value) {
-                            Util.setStatusBarTextColor(myStatusBarColor);
-                            getUserInfo();
-                          });
-                        },
+                        ],
+                      )
+                    : SizedBox(
+                        height: 45,
+                        width: 150,
+                        child: Button(
+                          '登录',
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(
+                              CupertinoPageRoute(
+                                builder: (context) => Login(),
+                              ),
+                            )
+                                .then((value) {
+                              Util.setStatusBarTextColor(myStatusBarColor);
+                              getUserInfo();
+                            });
+                          },
+                        ),
                       ),
+              ),
+              Container(
+                width: Util.screenWidth(context),
+                height: 12,
+                color: const Color(0xfff6f6f6),
+              ),
+              LinkItem(
+                name: '收藏',
+                icon: Icons.video_collection_outlined,
+                onTap: () {
+                  Navigator.of(context)
+                      .push(
+                    CupertinoPageRoute(
+                      builder: (context) => const Collection(),
                     ),
-            ),
-            Container(
-              width: Util.screenWidth(context),
-              height: 12,
-              color: const Color(0xfff6f6f6),
-            ),
-            LinkItem(
-              name: '收藏',
-              icon: Icons.video_collection_outlined,
-              onTap: () {
-                Navigator.of(context)
-                    .push(
-                  CupertinoPageRoute(
-                    builder: (context) => const Collection(),
-                  ),
-                )
-                    .then((value) {
-                  Util.setStatusBarTextColor(myStatusBarColor);
-                  getUserInfo();
-                });
-              },
-            ),
-            const LinkItem(
-              name: '求片',
-              icon: Icons.video_camera_front_outlined,
-            ),
-          ],
+                  )
+                      .then((value) {
+                    Util.setStatusBarTextColor(myStatusBarColor);
+                    getUserInfo();
+                  });
+                },
+              ),
+              // const LinkItem(
+              //   name: '求片',
+              //   icon: Icons.video_camera_front_outlined,
+              // ),
+              LinkItem(
+                name: '退出',
+                icon: Icons.exit_to_app,
+                onTap: () {
+                  if (!isLogin) return;
+                  Util.localStorage.ready.then((value) {
+                    if (value) {
+                      Util.localStorage.deleteItem('user');
+                      setState(() {
+                        isLogin = false;
+                      });
+                    }
+                  });
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

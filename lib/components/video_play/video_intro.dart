@@ -1,28 +1,29 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:x_m/constants.dart';
 import 'package:x_m/models/movie.dart';
+import 'package:x_m/screen/webview.dart';
 import 'package:x_m/util.dart';
 
 class VideoIntro extends StatefulWidget {
   final Movie movie;
+  final VoidCallback? clickComment;
 
-  const VideoIntro({super.key, required this.movie});
+  const VideoIntro({super.key, required this.movie, this.clickComment});
 
   @override
   State<StatefulWidget> createState() {
-    return _VideoIntro(movie);
+    return _VideoIntro();
   }
 }
 
-class _VideoIntro extends State<VideoIntro> {
-  final Movie movie;
+class _VideoIntro extends State<VideoIntro> with AutomaticKeepAliveClientMixin {
   bool isCollection = false;
-
-  _VideoIntro(this.movie);
 
   _collection() {
     Util.dio.get('/movie/collection', queryParameters: {
-      'id': movie.oid,
+      'id': widget.movie.oid,
       'like': isCollection ? '0' : '1'
     }).then((res) {
       if (res.data['err'] == true) {
@@ -36,7 +37,7 @@ class _VideoIntro extends State<VideoIntro> {
 
   _getCollectionState() {
     Util.dio.get('/movie/isCollection', queryParameters: {
-      'id': movie.oid,
+      'id': widget.movie.oid,
       'noMsg': true,
     }).then((res) {
       if (res.data['err'] == true) {
@@ -54,8 +55,18 @@ class _VideoIntro extends State<VideoIntro> {
     _getCollectionState();
   }
 
+  void _onShare(BuildContext context) async {
+    final box = context.findRenderObject() as RenderBox?;
+    await Share.share(
+      'X M http://admin.xmw.monster',
+      subject: 'X M电影APP',
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -63,7 +74,7 @@ class _VideoIntro extends State<VideoIntro> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              movie.title,
+              widget.movie.title,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 30,
@@ -77,7 +88,7 @@ class _VideoIntro extends State<VideoIntro> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              '分类：${movie.category} · 语言：${movie.language} · 导演：${movie.director}',
+              '分类：${widget.movie.category} · 语言：${widget.movie.language} · 导演：${widget.movie.director}',
               textAlign: TextAlign.center,
               style: const TextStyle(color: Color(0xffa5a5a5), height: 1.6),
             ),
@@ -87,7 +98,7 @@ class _VideoIntro extends State<VideoIntro> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: widget.clickComment,
                 child: const Icon(
                   Icons.message,
                   color: Color(0xffcfcfcf),
@@ -105,13 +116,40 @@ class _VideoIntro extends State<VideoIntro> {
               ),
               const SizedBox(width: 50),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  _onShare(context);
+                },
                 child: const Icon(
                   Icons.share,
                   color: Color(0xffcfcfcf),
                   size: 35,
                 ),
               ),
+              const SizedBox(width: 50),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(
+                    CupertinoPageRoute(
+                      builder: (context) => Webview(
+                          title: widget.movie.title,
+                          url:
+                              'https://m.douban.com/search/?query=${Uri.encodeComponent(widget.movie.title)}'),
+                    ),
+                  )
+                      .then((value) {
+                    Util.setStatusBarTextColor(videoPlayStatusBarColor);
+                  });
+                },
+                child: const Text(
+                  '豆',
+                  style: TextStyle(
+                    color: Color(0xffcfcfcf),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
             ],
           ),
           Container(
@@ -131,7 +169,7 @@ class _VideoIntro extends State<VideoIntro> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              movie.intro,
+              widget.movie.intro,
               style: const TextStyle(
                 color: Colors.black87,
                 height: 1.8,
@@ -152,7 +190,7 @@ class _VideoIntro extends State<VideoIntro> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              movie.actor,
+              widget.movie.actor,
               style: const TextStyle(
                 color: Colors.black87,
                 height: 1.6,
@@ -165,4 +203,7 @@ class _VideoIntro extends State<VideoIntro> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

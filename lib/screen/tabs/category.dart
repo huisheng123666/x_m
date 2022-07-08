@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:x_m/components/category/category_item.dart';
@@ -164,61 +163,70 @@ class _CategoryPage extends State<CategoryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return InitLoading(
-      loading: !isInit,
-      isErr: isErr,
-      refresh: () {
-        page = 1;
-        _getList();
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: RefreshIndicator(
-          onRefresh: _refresh,
-          color: xPrimaryColor,
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              CategorySub(
-                widget: widget,
-                activeSub: activeSub,
-                change: (cateSub) {
-                  page = 1;
-                  setState(() {
-                    activeSub = cateSub;
-                  });
-                  _getList();
-                },
-              ),
-              SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => CategoryItem(
-                    movie: movies[index],
-                    ontap: () {
-                      Navigator.of(context)
-                          .push(
-                        CupertinoPageRoute(
-                          builder: (context) => VideoPaly(movie: movies[index]),
+    return Column(
+      children: [
+        CategorySub(
+          widget: widget,
+          activeSub: activeSub,
+          change: (cateSub) {
+            page = 1;
+            setState(() {
+              isInit = false;
+              activeSub = cateSub;
+            });
+            _getList();
+          },
+        ),
+        Expanded(
+          child: InitLoading(
+            loading: !isInit,
+            isErr: isErr,
+            refresh: () {
+              page = 1;
+              _getList();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: RefreshIndicator(
+                onRefresh: _refresh,
+                color: xPrimaryColor,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => CategoryItem(
+                          movie: movies[index],
+                          ontap: () {
+                            Navigator.of(context)
+                                .push(
+                              CupertinoPageRoute(
+                                builder: (context) =>
+                                    VideoPaly(movie: movies[index]),
+                              ),
+                            )
+                                .then((value) {
+                              Util.setStatusBarTextColor(tabStatusBarStyle);
+                            });
+                          },
                         ),
-                      )
-                          .then((value) {
-                        Util.setStatusBarTextColor(tabStatusBarStyle);
-                      });
-                    },
-                  ),
-                  childCount: movies.length,
-                ),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 85 / 175,
-                  crossAxisSpacing: 10,
+                        childCount: movies.length,
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 85 / 175,
+                        crossAxisSpacing: 10,
+                      ),
+                    ),
+                    LoadingMore(hasMore: hasMore)
+                  ],
                 ),
               ),
-              LoadingMore(hasMore: hasMore)
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -240,31 +248,29 @@ class CategorySub extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Wrap(
-          runSpacing: 6,
-          children: categorySub[widget.type]!
-              .map(
-                (cate) => GestureDetector(
-                  onTap: () {
-                    change!(cate);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20, left: 10),
-                    child: Text(
-                      cate,
-                      style: TextStyle(
-                        color:
-                            activeSub == cate ? xPrimaryColor : Colors.black87,
-                      ),
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: categorySub[widget.type]!
+            .map(
+              (cate) => GestureDetector(
+                onTap: () {
+                  change!(cate);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20, left: 10),
+                  child: Text(
+                    cate,
+                    style: TextStyle(
+                      color: activeSub == cate ? xPrimaryColor : Colors.black87,
                     ),
                   ),
                 ),
-              )
-              .toList(),
-        ),
+              ),
+            )
+            .toList(),
       ),
     );
   }

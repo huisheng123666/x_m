@@ -98,6 +98,7 @@ class _Recommend extends State<Recommend> {
           onRefresh: _onRefrsh,
           color: xPrimaryColor,
           child: ListView.builder(
+            padding: EdgeInsets.zero,
             itemBuilder: (context, index) => RecommendItem(
               movie: movies[index],
               onTab: () {

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,7 +51,7 @@ class Util {
     };
 
     Util.dio.options = BaseOptions(
-      baseUrl: 'https://admin.xmw.monster/api',
+      baseUrl: 'http://192.168.2.40:4000/api',
       connectTimeout: 5000,
       receiveTimeout: 3000,
       contentType: 'application/json', // Added contentType here
